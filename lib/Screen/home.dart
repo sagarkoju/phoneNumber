@@ -1,8 +1,10 @@
-import 'dart:ffi';
 
-import 'package:crud/Page/firstpage.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,137 +12,103 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController _controller = TextEditingController();
-  TextEditingController codeController = TextEditingController();
-  String verification;
 
-  Future <Void> loginUser( String phone ,BuildContext context){
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-      firebaseAuth.verifyPhoneNumber(
-        timeout: Duration(seconds: 10),
-      phoneNumber: phone,
-     verificationCompleted: (AuthCredential credential) async{
-       Navigator.pop(context);
-          UserCredential  result= await firebaseAuth.signInWithCredential(credential);
 
-          User firebaseUser = result.user;
-        
-        if(firebaseUser!= null){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sagar(firebaseUser: firebaseUser,)));
-        }
-        else {
-          print ('Error');
-        }
-          
-
-     },
-     verificationFailed:( FirebaseAuthException authException){
-       print(authException.message);
-     }, 
-     codeSent: (String verificationId, [int forceResendingToken]){
-       showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context){
-          return AlertDialog(
-            title: Text('Give the code'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: codeController,
-                )
-              ],
-              
-            ),
-            actions: [
-              FlatButton(
-              onPressed: () async{
-                final code = codeController.text.trim();
-              AuthCredential credential = PhoneAuthProvider.credential(verificationId:verificationId , smsCode: code);
-               UserCredential  result= await firebaseAuth.signInWithCredential(credential);
-
-               User firebaseUser = result.user;
-                if(firebaseUser!= null){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Sagar(firebaseUser: firebaseUser,)));
-        }
-        else {
-          print ('Error');
-        }
-              },
-             child: Text('Confirm'),
-             textColor: Colors.white,
-             color: Colors.blue,
-             )
-            ],
-          );
-        }
-        
-        
-        );
-     }, 
-     codeAutoRetrievalTimeout: (String verId){
-         setState(() {
-           verification= verId;
-         });
-     });
-    
-  }
+  User firebaseuser;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  GoogleSignIn _googleSignIn = new GoogleSignIn();
   
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Phone Number Verification'),
-        centerTitle: true,
-        backgroundColor: Colors.green,
-      ),
-       body: Column(
-         children: [
-           Text('Login', style: TextStyle(color: Colors.lightBlue, fontSize: 36, fontWeight: FontWeight.bold),),
-           SizedBox(
-             height: 30,
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Google Sign In Authentication'),
+          centerTitle: true,
+          backgroundColor: Colors.green,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.power_settings_new),
+            )
+          ],
+        ),
+        body: isSignIn? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+                 CircleAvatar(
+                   radius: 90,
+                   backgroundImage: NetworkImage(firebaseuser.photoURL) ,),
+                 Text(firebaseuser.displayName,textScaleFactor: 2,),
+                  Text(firebaseuser.email,textScaleFactor: 2,),
+                  
+               OutlinedButton(onPressed: (){
+       
+               gooleSignout();
+      },
+      child: Text('Log Out'),
+      
+      )
+                   
+             
+              
+                           ],
+                         ),
+        ):
+         Center(
+           child: Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: [
+               Center(
+                        child: Text(
+                      'Google Sign In',
+                      style: TextStyle(
+                          color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                   ),
+                    FlatButton.icon(
+                   color: Colors.blueGrey,
+                  onPressed: () {
+                  gsign();
+                                 },
+                                icon: Icon(EvaIcons.google),
+                               label: Text('Google Sign In'),
+                               textColor: Colors.black,
+                               ),
+             ],
            ),
-           Padding(
-             padding: const EdgeInsets.all(20.0),
-             child: TextFormField(
+         ),
+                     );
+                   }
+                   bool isSignIn= false;
+                Future<void>   gsign() async{
+                  GoogleSignIn _googleSignIn = GoogleSignIn(
+                   
+                 );
+                 GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn(); // Trigger Authentication Floe
+                 
+    GoogleSignInAuthentication authentication = await googleSignInAccount.authentication; // obtain auth detail fromthe request
+                 AuthCredential credential =      GoogleAuthProvider.credential(idToken: authentication.idToken, accessToken: authentication.accessToken); // creating new credential
+                 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+                 UserCredential result= await firebaseAuth.signInWithCredential(credential);
+                 
+                 firebaseuser = result.user;
+                 setState(() {
+                   isSignIn= true;
+                 });
                
-               
-               controller: _controller,
-               decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                ),
-                filled: true,
-                focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: Colors.grey[100])
-                 ),
-                hintText: "Mobile Number",
-                fillColor: Colors.grey[100],
-                  ),
-             ),
-           ),
-           Padding(
-             padding: const EdgeInsets.all(20.0),
-             child: Container(
-               decoration: BoxDecoration(
-                 borderRadius: BorderRadius.circular(30),
-                 color: Colors.blue,
-               ),
-               
-               width: double.infinity,
-               child: FlatButton(
-                child: Text('Login'),
-                textColor: Colors.white,
-                onPressed: (){
-                  final phone = _controller.text.trim();
-                  loginUser(phone , context);
-                }),
-             ),
-           )
-         ],
-       ),
-    );
+                   }
+                Future<void> gooleSignout() async {
+    await firebaseAuth.signOut().then((onValue) {
+      _googleSignIn.signOut();
+      setState(() {
+        isSignIn = false;
+      });
+    });
   }
-}
+                 }
+                 
+                
+
