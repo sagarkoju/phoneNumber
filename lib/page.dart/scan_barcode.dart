@@ -62,7 +62,7 @@ class _ShowBarcodeState extends State<ShowBarcode> {
         this.barcode = barcode;
       });
     } on PlatformException {
-      barcode = "Error to failed the device";
+      barcode = "Error to failed the device on your mobile";
     }
   }
 }
