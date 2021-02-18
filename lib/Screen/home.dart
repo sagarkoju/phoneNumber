@@ -1,10 +1,16 @@
+import 'dart:io';
 
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:crud/page.dart/page.dart';
+import 'package:crud/page.dart/scan_barcode.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
-import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:crud/page.dart/dell.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,103 +18,208 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  File _imageFile;
+  String imgURL;
+  Widget _previewWidget = SizedBox();
 
-
-  User firebaseuser;
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  GoogleSignIn _googleSignIn = new GoogleSignIn();
-  
-  
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Google Sign In Authentication'),
-          centerTitle: true,
-          backgroundColor: Colors.green,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.power_settings_new),
-            )
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("File Upload"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              icon: Icon(Icons.lightbulb_outline),
+              onPressed: () {
+                Get.changeThemeMode(
+                    Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
+              })
+        ],
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            RaisedButton(
+                color: Colors.lightBlue,
+                child: Text('Pick Image'),
+                textColor: Colors.white,
+                onPressed: () {
+                  _pick();
+                }),
+            SizedBox(
+              height: 30,
+            ),
+            _preview(),
+            SizedBox(
+              height: 30,
+            ),
+            RaisedButton(
+                child: Text('Upload'),
+                textColor: Colors.white,
+                color: Colors.lightBlue,
+                onPressed: () {
+                  _upload(context);
+                }),
+            SizedBox(
+              height: 30,
+            ),
+            RaisedButton(
+                color: Colors.blue,
+                child: Text('PDF Viewer'),
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PDFViewer()));
+                }),
+            RaisedButton(
+                color: Colors.blue,
+                child: Text('Show SnackBar'),
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.snackbar("Welcome to", "Home Page",
+                      snackPosition: SnackPosition.BOTTOM,
+                      colorText: Colors.red,
+                      backgroundColor: Colors.black,
+                      animationDuration: Duration(milliseconds: 5000),
+                      titleText: Text(
+                        "Sagar",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      messageText: Text(
+                        "Koju",
+                        style: TextStyle(color: Colors.red),
+                      ));
+                }),
+            RaisedButton(
+                color: Colors.blue,
+                child: Text('Show Dialog'),
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.defaultDialog(
+                    title: "Welcome",
+                    middleText: "to Home Page",
+                    content: Text('Welcome to Login Page'),
+                    backgroundColor: Colors.purpleAccent,
+                    textConfirm: "Confirm",
+                    textCancel: "Cancel",
+                    buttonColor: Colors.green,
+                    barrierDismissible: true,
+                  );
+                }),
+            SizedBox(
+              height: 30,
+            ),
+            RaisedButton(
+                color: Colors.blue,
+                child: Text('bottom sheet'),
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.bottomSheet(
+                      Container(
+                        child: Wrap(
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.home),
+                              title: Text('Home'),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.person),
+                              title: Text('About'),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.shopping_bag),
+                              title: Text('Cart'),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.star),
+                              title: Text('Share'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      backgroundColor: Colors.greenAccent,
+                      barrierColor: Colors.orangeAccent);
+                }),
+            RaisedButton(
+                color: Colors.blue,
+                child: Text('show Barcode'),
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.to(ShowBarcode());
+                })
           ],
         ),
-        body: isSignIn? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      ),
+    );
+  }
 
-                 CircleAvatar(
-                   radius: 90,
-                   backgroundImage: NetworkImage(firebaseuser.photoURL) ,),
-                 Text(firebaseuser.displayName,textScaleFactor: 2,),
-                  Text(firebaseuser.email,textScaleFactor: 2,),
-                  
-               OutlinedButton(onPressed: (){
-       
-               gooleSignout();
-      },
-      child: Text('Log Out'),
-      
-      )
-                   
-             
-              
-                           ],
-                         ),
-        ):
-         Center(
-           child: Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               Center(
-                        child: Text(
-                      'Google Sign In',
-                      style: TextStyle(
-                          color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                   ),
-                    FlatButton.icon(
-                   color: Colors.blueGrey,
-                  onPressed: () {
-                  gsign();
-                                 },
-                                icon: Icon(EvaIcons.google),
-                               label: Text('Google Sign In'),
-                               textColor: Colors.black,
-                               ),
-             ],
-           ),
-         ),
-                     );
-                   }
-                   bool isSignIn= false;
-                Future<void>   gsign() async{
-                  GoogleSignIn _googleSignIn = GoogleSignIn(
-                   
-                 );
-                 GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn(); // Trigger Authentication Floe
-                 
-    GoogleSignInAuthentication authentication = await googleSignInAccount.authentication; // obtain auth detail fromthe request
-                 AuthCredential credential =      GoogleAuthProvider.credential(idToken: authentication.idToken, accessToken: authentication.accessToken); // creating new credential
-                 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-                 UserCredential result= await firebaseAuth.signInWithCredential(credential);
-                 
-                 firebaseuser = result.user;
-                 setState(() {
-                   isSignIn= true;
-                 });
-               
-                   }
-                Future<void> gooleSignout() async {
-    await firebaseAuth.signOut().then((onValue) {
-      _googleSignIn.signOut();
+  _pick() async {
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile pickedFile =
+        await imagePicker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
       setState(() {
-        isSignIn = false;
+        _imageFile = File(pickedFile.path);
       });
+
+      _previewWidget = Image.file(
+        _imageFile,
+        height: Get.height * .5,
+      );
+    }
+  }
+
+  Future _upload(BuildContext context) async {
+    FirebaseStorage firebaseStorage = FirebaseStorage();
+    StorageReference reference = firebaseStorage
+        .ref()
+        .child("images/" + DateTime.now().toIso8601String());
+    StorageUploadTask task = reference.putFile(_imageFile);
+    StorageTaskSnapshot snapshot = await task.onComplete;
+    var downloadurl = await snapshot.ref.getDownloadURL();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    firebaseFirestore.collection("Images").add({
+      "url": downloadurl,
+    });
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Upload Successfully'),
+            content: Image.network(
+              downloadurl,
+              height: Get.height * .25,
+            ),
+            actions: [
+              RaisedButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => Sagar()));
+                  }),
+              RaisedButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
+        });
+//   Get.dialog(AlertDialog(
+// content: Text("Upload Successfully", style: TextStyle(color: Colors.black, fontSize: 20),)
+// ,
+
+//     ));
+
+    setState(() {
+      imgURL = downloadurl;
     });
   }
-                 }
-                 
-                
 
+  Widget _preview() {
+    return _previewWidget;
+  }
+}
