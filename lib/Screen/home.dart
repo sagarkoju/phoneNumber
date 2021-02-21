@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crud/page.dart/orientationbuilder.dart';
 
 import 'package:crud/page.dart/page.dart';
 import 'package:crud/page.dart/scan_barcode.dart';
@@ -37,118 +38,127 @@ class _HomePageState extends State<HomePage> {
               })
         ],
       ),
-      body: Center(
-        child: Column(
-          children: [
-            RaisedButton(
-                color: Colors.lightBlue,
-                child: Text('Pick Image'),
-                textColor: Colors.white,
-                onPressed: () {
-                  _pick();
-                }),
-            SizedBox(
-              height: 30,
-            ),
-            _preview(),
-            SizedBox(
-              height: 30,
-            ),
-            RaisedButton(
-                child: Text('Upload'),
-                textColor: Colors.white,
-                color: Colors.lightBlue,
-                onPressed: () {
-                  _upload(context);
-                }),
-            SizedBox(
-              height: 30,
-            ),
-            RaisedButton(
-                color: Colors.blue,
-                child: Text('PDF Viewer'),
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PDFViewer()));
-                }),
-            RaisedButton(
-                color: Colors.blue,
-                child: Text('Show SnackBar'),
-                textColor: Colors.white,
-                onPressed: () {
-                  Get.snackbar("Welcome to", "Home Page",
-                      snackPosition: SnackPosition.BOTTOM,
-                      colorText: Colors.red,
-                      backgroundColor: Colors.black,
-                      animationDuration: Duration(milliseconds: 5000),
-                      titleText: Text(
-                        "Sagar",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      messageText: Text(
-                        "Koju",
-                        style: TextStyle(color: Colors.red),
-                      ));
-                }),
-            RaisedButton(
-                color: Colors.blue,
-                child: Text('Show Dialog'),
-                textColor: Colors.white,
-                onPressed: () {
-                  Get.defaultDialog(
-                    title: "Welcome",
-                    middleText: "to Home Page",
-                    content: Text('Welcome to Login Page'),
-                    backgroundColor: Colors.purpleAccent,
-                    textConfirm: "Confirm",
-                    textCancel: "Cancel",
-                    buttonColor: Colors.green,
-                    barrierDismissible: true,
-                  );
-                }),
-            SizedBox(
-              height: 30,
-            ),
-            RaisedButton(
-                color: Colors.blue,
-                child: Text('bottom sheet'),
-                textColor: Colors.white,
-                onPressed: () {
-                  Get.bottomSheet(
-                      Container(
-                        child: Wrap(
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.home),
-                              title: Text('Home'),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.person),
-                              title: Text('About'),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.shopping_bag),
-                              title: Text('Cart'),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.star),
-                              title: Text('Share'),
-                            ),
-                          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              RaisedButton(
+                  color: Colors.lightBlue,
+                  child: Text('Pick Image'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    _pick();
+                  }),
+              SizedBox(
+                height: 30,
+              ),
+              _preview(),
+              SizedBox(
+                height: 30,
+              ),
+              RaisedButton(
+                  child: Text('Upload'),
+                  textColor: Colors.white,
+                  color: Colors.lightBlue,
+                  onPressed: () {
+                    _upload(context);
+                  }),
+              SizedBox(
+                height: 30,
+              ),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('PDF Viewer'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PDFViewer()));
+                  }),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('Show SnackBar'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Get.snackbar("Welcome to", "Home Page",
+                        snackPosition: SnackPosition.BOTTOM,
+                        colorText: Colors.red,
+                        backgroundColor: Colors.black,
+                        animationDuration: Duration(milliseconds: 5000),
+                        titleText: Text(
+                          "Sagar",
+                          style: TextStyle(color: Colors.red),
                         ),
-                      ),
-                      backgroundColor: Colors.greenAccent,
-                      barrierColor: Colors.orangeAccent);
-                }),
-            RaisedButton(
-                color: Colors.blue,
-                child: Text('show Barcode'),
-                textColor: Colors.white,
-                onPressed: () {
-                  Get.to(ShowBarcode());
-                })
-          ],
+                        messageText: Text(
+                          "Koju",
+                          style: TextStyle(color: Colors.red),
+                        ));
+                  }),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('Show Dialog'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Get.defaultDialog(
+                      title: "Welcome",
+                      middleText: "to Home Page",
+                      content: Text('Welcome to Login Page'),
+                      backgroundColor: Colors.purpleAccent,
+                      textConfirm: "Confirm",
+                      textCancel: "Cancel",
+                      buttonColor: Colors.green,
+                      barrierDismissible: true,
+                    );
+                  }),
+              SizedBox(
+                height: 30,
+              ),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('bottom sheet'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Get.bottomSheet(
+                        Container(
+                          child: Wrap(
+                            children: [
+                              ListTile(
+                                leading: Icon(Icons.home),
+                                title: Text('Home'),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.person),
+                                title: Text('About'),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.shopping_bag),
+                                title: Text('Cart'),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.star),
+                                title: Text('Share'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.greenAccent,
+                        barrierColor: Colors.orangeAccent);
+                  }),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('show Barcode'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Get.to(ShowBarcode());
+                  }),
+              RaisedButton(
+                  color: Colors.blue,
+                  child: Text('Orientation Builder'),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Get.to(OrientationBuilders());
+                  })
+            ],
+          ),
         ),
       ),
     );
