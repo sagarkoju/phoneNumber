@@ -42,6 +42,8 @@ dependencies:
   transparent_image: ^1.0.0
   syncfusion_flutter_pdfviewer:
   flutter_barcode_scanner: ^1.0.1
+  google_maps_flutter: ^1.2.0
+  location: ^3.2.4
 
 dev_dependencies:
   flutter_test:

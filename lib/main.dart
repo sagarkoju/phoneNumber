@@ -12,6 +12,6 @@ void main() async {
     theme: Themes().lightTheme,
     darkTheme: Themes().darkTheme,
     home: HomePage(),
-    debugShowCheckedModeBanner: false,
+    debugShowCheckedModeBanner:false,
   ));
 }

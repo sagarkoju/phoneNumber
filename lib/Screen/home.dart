@@ -1,17 +1,19 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crud/page.dart/orientationbuilder.dart';
 
-import 'package:crud/page.dart/page.dart';
-import 'package:crud/page.dart/scan_barcode.dart';
+import 'package:crud/page/dell.dart';
+import 'package:crud/page/layout.dart';
+import 'package:crud/page/orientationbuilder.dart';
+import 'package:crud/page/page.dart';
+import 'package:crud/page/sanam.dart';
+import 'package:crud/page/scan_barcode.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:crud/page.dart/dell.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -42,10 +44,12 @@ class _HomePageState extends State<HomePage> {
         child: Center(
           child: Column(
             children: [
+              /// Image Picker from gallery
               RaisedButton(
-                  color: Colors.lightBlue,
-                  child: Text('Pick Image'),
+                
+                  color: Colors.blue,
                   textColor: Colors.white,
+                  child: Text('Pick Image'),
                   onPressed: () {
                     _pick();
                   }),
@@ -56,28 +60,32 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 30,
               ),
+
+              /// Image upload to the firebase
               RaisedButton(
-                  child: Text('Upload'),
+                  color: Colors.blue,
                   textColor: Colors.white,
-                  color: Colors.lightBlue,
+                  child: Text('Upload'),
                   onPressed: () {
                     _upload(context);
                   }),
               SizedBox(
                 height: 30,
               ),
+              // / pdf Viewer button
               RaisedButton(
                   color: Colors.blue,
-                  child: Text('PDF Viewer'),
                   textColor: Colors.white,
+                  child: Text('PDF Viewer'),
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PDFViewer()));
                   }),
+              // /snackbar raised button
               RaisedButton(
                   color: Colors.blue,
-                  child: Text('Show SnackBar'),
                   textColor: Colors.white,
+                  child: Text('Show SnackBar'),
                   onPressed: () {
                     Get.snackbar("Welcome to", "Home Page",
                         snackPosition: SnackPosition.BOTTOM,
@@ -93,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(color: Colors.red),
                         ));
                   }),
+              // show dialog button
               RaisedButton(
                   color: Colors.blue,
                   child: Text('Show Dialog'),
@@ -112,6 +121,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 30,
               ),
+              // Show bottom sheet bottom
               RaisedButton(
                   color: Colors.blue,
                   child: Text('bottom sheet'),
@@ -143,6 +153,7 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: Colors.greenAccent,
                         barrierColor: Colors.orangeAccent);
                   }),
+              // / show barcode
               RaisedButton(
                   color: Colors.blue,
                   child: Text('show Barcode'),
@@ -150,13 +161,31 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Get.to(ShowBarcode());
                   }),
+              // Show orientation builder
               RaisedButton(
                   color: Colors.blue,
-                  child: Text('Orientation Builder'),
                   textColor: Colors.white,
+                  child: Text('Orientation Builder'),
                   onPressed: () {
                     Get.to(OrientationBuilders());
-                  })
+                  }),
+              RaisedButton(
+                  child: Text("sanam map"),
+                  textColor: Colors.white,
+                  color: Colors.red,
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => Sanam()));
+                  }),
+              RaisedButton(
+                  child: Text("Layout Builder"),
+                  textColor: Colors.white,
+                  color: Colors.red,
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => Lay()));
+                  }),
+                  
             ],
           ),
         ),
@@ -164,6 +193,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+// Pick image from the gallery
   _pick() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile pickedFile =
@@ -181,6 +211,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+//  upload the image to the firebase
   Future _upload(BuildContext context) async {
     FirebaseStorage firebaseStorage = FirebaseStorage();
     StorageReference reference = firebaseStorage
