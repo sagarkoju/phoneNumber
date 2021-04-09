@@ -15,27 +15,25 @@ class _ShowBarcodeState extends State<ShowBarcode> {
       appBar: AppBar(
         title: Text('Scan Barcode'),
         centerTitle: true,
+        elevation: 1,
+        brightness: Brightness.light,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Scan the result',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold),
+            BarText(
+              text: "Scan the result",
+              color: Colors.blue,
+              textScale: 4,
             ),
             SizedBox(
               height: 10,
             ),
-            Text(
-              '$barcode',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold),
+            BarText(
+              text: "$barcode",
+              color: Colors.red,
+              textScale: 4,
             ),
             SizedBox(
               height: 10,
@@ -64,5 +62,27 @@ class _ShowBarcodeState extends State<ShowBarcode> {
     } on PlatformException {
       barcode = "Error to failed on your mobile device ";
     }
+  }
+}
+
+class BarText extends StatelessWidget {
+  final String text;
+  final Color color;
+  final double textScale;
+
+  const BarText({Key key, this.text, this.color, this.textScale})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text(
+        text,
+        textScaleFactor: textScale,
+        style: TextStyle(
+          color: color,
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OrientationBuilders extends StatelessWidget {
   final String flutter =
@@ -31,11 +32,12 @@ The state management is one of the most popular and necessary processes in the l
         children: [
           Image.network(
               "https://cdn.dribbble.com/users/1622791/screenshots/11174104/flutter_intro.png"),
-          Text(
-            flutter,
-            textAlign: TextAlign.justify,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          )
+          Text(flutter,
+              textAlign: TextAlign.justify,
+              style: GoogleFonts.lexendTera(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white,
+                  fontSize: 13))
         ],
       ),
     );
@@ -52,11 +54,10 @@ The state management is one of the most popular and necessary processes in the l
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Text(
-                flutter,
-                textAlign: TextAlign.justify,
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
+              child: Text(flutter,
+                  textAlign: TextAlign.justify,
+                  style: GoogleFonts.lato(
+                      fontStyle: FontStyle.italic, color: Colors.white)),
             ),
           ),
         ],

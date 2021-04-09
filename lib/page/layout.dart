@@ -28,21 +28,27 @@ class _LayState extends State<Lay> {
   }
 
   Widget home() {
+    return buildpadding();
+  }
+
+  Padding buildpadding() {
     return Padding(
       padding: EdgeInsets.all(10),
       child: GridView.count(
           crossAxisCount: 3,
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
-          children: List.generate(
-              100,
-              (index) => Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.green,
-                      child: Text('$index', textScaleFactor: 2),
-                    ),
-                  ))),
+          children: List.generate(100, (index) => buildCard(index))),
+    );
+  }
+
+  Card buildCard(int index) {
+    return Card(
+      child: Container(
+        alignment: Alignment.center,
+        color: Colors.green,
+        child: Text('$index', textScaleFactor: 2),
+      ),
     );
   }
 
@@ -53,18 +59,7 @@ class _LayState extends State<Lay> {
           crossAxisCount: 2,
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
-          children: List.generate(
-              100,
-              (index) => Card(
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.yellowAccent,
-                      child: Text(
-                        '$index',
-                        textScaleFactor: 2,
-                      ),
-                    ),
-                  ))),
+          children: List.generate(100, (index) => buildCard(index))),
     );
   }
 }
